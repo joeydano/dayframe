@@ -85,7 +85,13 @@ export function BlockEditor({
     until: (!recurring || scope === 'series') && recurrence !== 'none' && until ? until : null,
     reminderMinutes: reminder === 'none' ? null : (Number(reminder) as Block['reminderMinutes']),
   }
-  const overlaps = findOverlaps(planner.blocks, candidate, existing)
+  const overlaps = findOverlaps(
+    recurring && scope === 'series'
+      ? planner.blocks.filter((block) => block.id !== existing.id)
+      : planner.blocks,
+    candidate,
+    existing,
+  )
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()

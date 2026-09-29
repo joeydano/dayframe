@@ -48,6 +48,8 @@ The database stores one versioned JSON document, updated in a single atomic stat
 - `cargo test --locked --manifest-path src-tauri/Cargo.toml`: SQLite and native reminder-queue tests.
 - `npm run format`: format frontend, tests, config, and docs.
 
+Vitest pins `America/New_York` in its configuration so DST tests behave consistently on every workstation, including when the shell uses UTC. Browser tests also use this timezone and default to two workers to avoid browser startup timeouts on constrained machines.
+
 On Fedora, an additional native integration test exercises the actual bundled WebKitGTK app:
 
 ```bash

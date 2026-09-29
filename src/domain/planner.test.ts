@@ -97,6 +97,8 @@ describe('recurring calendar blocks', () => {
     expect(findOverlaps([original], block({ startMinute: 585, endMinute: 645 }))).toHaveLength(1)
   })
   it('advances by local dates across DST and preserves clock times', () => {
+    expect(localDateTime('2026-03-07', 540).getTimezoneOffset()).toBe(300)
+    expect(localDateTime('2026-03-08', 540).getTimezoneOffset()).toBe(240)
     expect(addDays('2026-03-08', 1)).toBe('2026-03-09')
     expect(addDays('2026-11-01', 1)).toBe('2026-11-02')
     const events = occurrences(
@@ -163,6 +165,16 @@ describe('templates and backups', () => {
     expect(() => makeTemplate(emptyPlanner(), '2026-09-28', 'Empty')).toThrow('Add a block'))
 })
 describe('reminders', () => {
+  it('skips reminders for a nonexistent time during the spring DST gap', () => {
+    const state = {
+      ...emptyPlanner(),
+      blocks: [
+        block({ date: '2026-03-08', startMinute: 150, endMinute: 180, reminderMinutes: 15 }),
+      ],
+    }
+    state.preferences.remindersEnabled = true
+    expect(reminderJobs(state, localDateTime('2026-03-08', 0))).toEqual([])
+  })
   it('queues lead-time notifications only when globally enabled', () => {
     const state = { ...emptyPlanner(), blocks: [block()] }
     const now = localDateTime('2026-09-28', 530)

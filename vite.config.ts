@@ -8,5 +8,9 @@ export default defineConfig({
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   server: { port: 1420, strictPort: true, watch: { ignored: ['**/src-tauri/**'] } },
   clearScreen: false,
-  test: { include: ['src/**/*.test.ts'], environment: 'node' },
+  test: {
+    include: ['src/**/*.test.ts'],
+    environment: 'node',
+    env: { TZ: 'America/New_York' },
+  },
 })

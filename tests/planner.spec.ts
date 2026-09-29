@@ -58,6 +58,34 @@ test('single-occurrence edit preserves the weekday series', async ({ page }) => 
   expect(saved.blocks[0].exceptions).toEqual(['2026-09-29'])
 })
 
+for (const otherBlock of [false, true]) {
+  test(`series edits exclude themselves ${otherBlock ? 'while retaining real overlap warnings' : 'when opened from a later occurrence'}`, async ({
+    page,
+  }) => {
+    if (otherBlock) await createBlock(page, 'Another block')
+    await createBlock(page, 'Morning focus', true)
+    await page.locator('.fc-event').filter({ hasText: 'Morning focus' }).nth(1).click()
+    await page.getByRole('combobox', { name: 'Edit scope' }).click()
+    await page.getByRole('option', { name: 'Entire series', exact: true }).click()
+    await expect(page.getByLabel('Series starts on')).toHaveValue('2026-09-29')
+    if (otherBlock) {
+      await expect(page.locator('.overlap-note')).toContainText('Overlaps 1 other block')
+    } else {
+      await expect(page.locator('.overlap-note')).toHaveCount(0)
+    }
+  })
+}
+
+test('moving one occurrence still warns about another occurrence of its series', async ({
+  page,
+}) => {
+  await createBlock(page, 'Morning focus', true)
+  await page.locator('.fc-event').filter({ hasText: 'Morning focus' }).nth(1).click()
+  await expect(page.locator('.overlap-note')).toHaveCount(0)
+  await page.getByLabel('Date', { exact: true }).fill('2026-09-29')
+  await expect(page.locator('.overlap-note')).toContainText('Overlaps 1 other block')
+})
+
 test('dragging and resizing snap to 15 minutes and persist', async ({ page }) => {
   await createBlock(page, 'Move me')
   const event = page.locator('.fc-event').filter({ hasText: 'Move me' })
