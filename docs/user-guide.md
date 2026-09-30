@@ -36,4 +36,4 @@ Backups are plain JSON and contain your titles and notes. Keep them wherever you
 
 ## What's next
 
-MVP 0.2 will add a checkable per-day TODO panel/drawer. That is separate from calendar-block completion. macOS/iOS, cross-device sync, desktop idle displays, and mobile widgets remain later milestones; see ADR 001.
+Version 0.2 focuses on local storage and Fedora/macOS delivery. Encrypted desktop sync is planned for 0.3, followed by iPhone in 0.4. The per-day TODO drawer is deferred. See [ADR 002](adr/0002-storage-sync-and-distribution.md) for the agreed scope and remaining decisions. Cloud sync and the phone app are not implemented in this branch.

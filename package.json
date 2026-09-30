@@ -10,13 +10,17 @@
     "preview": "vite preview --host 127.0.0.1",
     "tauri": "tauri",
     "desktop": "tauri dev",
-    "desktop:build": "tauri build --bundles rpm",
+    "desktop:build": "tauri build",
+    "desktop:build:linux": "tauri build --bundles rpm",
+    "desktop:build:macos": "tauri build --bundles dmg",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "lint": "eslint .",
     "check": "npm run lint && npm test && npm run build",
     "test:native": "node tests/native-smoke.mjs",
+    "test:native:build": "tauri build --debug --no-bundle --config tests/native.tauri.conf.json",
+    "test:native:migration": "node tests/native-smoke.mjs --legacy",
     "format": "prettier --write ."
   },
   "dependencies": {
