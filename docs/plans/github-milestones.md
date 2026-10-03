@@ -1,23 +1,23 @@
 # GitHub milestones and epics
 
-These are ready-to-use milestone descriptions and tracking-issue bodies for the approved three-release [implementation plan](mvp-2.md). The owner is creating them on GitHub. See [copyable milestone templates and instructions](milestone-templates.md). These files do not assert that remote milestones or issues have already been created.
+These are ready-to-use milestone descriptions and tracking-issue bodies for the approved three-release [implementation plan](mvp-2.md), plus the personal iPhone prototype prioritized before sync on 2026-10-02. The owner is creating them on GitHub. See [copyable milestone templates and instructions](milestone-templates.md). These files do not assert that remote milestones or issues have already been created.
 
-Use one GitHub milestone per release, one tracking issue per epic, and small linked implementation issues/PRs underneath. An epic groups outcomes; it does not need a long-lived branch. Leave due dates unset until the platform prototype and key design decisions are complete.
+Use one GitHub milestone per release plus the interim prototype milestone, one tracking issue per epic, and small linked implementation issues/PRs underneath. An epic groups outcomes; it does not need a long-lived branch. Leave due dates unset until the platform prototype and key design decisions are complete.
 
 ## Milestone: 0.2 — Local foundations and desktop delivery
 
-**Description:** Deliver reliable offline Fedora and macOS applications, a safe migration from the MVP 0.1 planner, compatible backups, and verified GitHub installer downloads. Prove the iPhone build/native capability path early. Accounts, cloud sync, production encryption flows, and a public iPhone app are outside this release.
+**Description:** Deliver reliable offline Fedora and macOS applications, a safe migration from the MVP 0.1 planner, compatible backups, and verified GitHub installer downloads. The personal iPhone prototype now has a separate milestone below. Accounts, cloud sync, production encryption flows, and a public iPhone app are outside this release.
 
-### Epic: Verify Apple platforms and define cross-device contracts
+### Epic: Verify the Mac and record desktop behavior
 
-**Goal:** Demonstrate that the existing Tauri architecture can support the target devices and resolve data-affecting behavior before changing storage.
+**Goal:** Demonstrate that the existing app works on the target Mac and document the desktop support boundary.
 
-- [ ] Confirm Mac architecture/OS and iPhone OS; document the initial support matrix.
-- [ ] Run the local app on macOS and a minimal iPhone prototype; verify persistence, touch interaction, native files, notifications, and key-storage access.
-- [ ] Agree on time-zone, offline/account, preference-sync, and reminder behavior in ADR 002.
-- [ ] Record signing/distribution prerequisites and screen backend options against the hard cost ceiling.
+- [ ] Confirm Mac architecture/OS and document the initial desktop support matrix.
+- [ ] Verify planning, persistence, native files, and notification behavior on macOS.
+- [ ] Record current local time/account/reminder behavior and identify decisions needed before 0.3 sync.
+- [ ] Record desktop signing/distribution prerequisites. Phone feasibility belongs to the next prototype milestone; backend selection belongs to 0.3.
 
-**Dependencies:** none. **Plan:** chunk 1 and desktop platform verification.
+**Dependencies:** none. **Plan:** desktop portion of chunk 1 and platform verification.
 
 ### Epic: Migrate planner storage safely
 
@@ -28,7 +28,7 @@ Use one GitHub milestone per release, one tracking issue per epic, and small lin
 - [ ] Define revision/deletion metadata and a transaction boundary for later sync, without an unbounded queue for local-only users.
 - [ ] Verify interrupted migration, restart, invalid/newer schemas, and representative existing planners.
 
-**Dependencies:** data/time decisions from the platform/contracts epic. **Plan:** chunk 2.
+**Dependencies:** preserve the existing local planner/time contract; cross-device time rules remain a 0.3 decision. **Plan:** chunk 2.
 
 ### Epic: Publish installable desktop apps
 
@@ -40,6 +40,34 @@ Use one GitHub milestone per release, one tracking issue per epic, and small lin
 - [ ] Publish actual assets and update the concise README/download guide with supported targets and release notes.
 
 **Dependencies:** platform verification and storage migration. **Plan:** desktop portions of chunks 6–8.
+
+## Milestone: iPhone prototype — personal demo
+
+**Description:** The next development priority is an installed offline app the owner can use and demo on their iPhone 16, away from the Mac. Keep the 0.2/0.3/0.4 release numbers unchanged. See the [prototype plan](iphone-prototype.md) for its bounded scope and acceptance checklist.
+
+### Epic: Build and install the personal phone prototype
+
+**Goal:** Establish a repeatable native iPhone installation and local persistence path.
+
+- [ ] Confirm Mac chip/macOS, iOS, and Xcode versions and install the required mobile tooling.
+- [ ] Initialize the Tauri iOS target, review generated project files, and adapt desktop-only startup/plugins as needed.
+- [ ] Install a build with bundled frontend assets; launch from the icon with the Mac disconnected and development server stopped.
+- [ ] Save/reopen isolated demo data in SQLite and document personal provisioning/update steps and limitations.
+- [ ] Record native file, notification, and secure-key capability findings where practical; file follow-up issues for capabilities outside the demo's acceptance criteria.
+
+**Dependencies:** current desktop storage/setup PR merged; compatible Mac/Xcode/iPhone environment. Published 0.2 installers, backend selection, and paid Apple membership are not prerequisites. **Plan:** platform subset of chunk 1.
+
+### Epic: Make a day-planning demo usable on iPhone
+
+**Goal:** Gather real-device UI feedback from a small but useful offline planning session.
+
+- [ ] Add today/previous/next day navigation and touch-friendly create/edit/delete for individual blocks.
+- [ ] Support title, notes, existing category colors, and 15-minute start/end controls without requiring dragging.
+- [ ] Check scrolling, touch targets, safe areas, and forms with the keyboard open.
+- [ ] In airplane mode, create three blocks, edit their fields/times, delete one, and force-quit/reopen with changes intact.
+- [ ] Record the tested build/device versions, known limitations, and observations from an actual demo session.
+
+**Dependencies:** installed phone build and local persistence from the previous epic. **Plan:** bounded phone subset of chunk 6, completed before sync implementation. Full feature parity, accounts, sync, guaranteed closed-app reminders, and public distribution are deferred.
 
 ## Milestone: 0.3 — Encrypted desktop sync
 
@@ -93,7 +121,7 @@ Use one GitHub milestone per release, one tracking issue per epic, and small lin
 - [ ] Implement and verify agreed local reminder and background/foreground behavior.
 - [ ] Run the same encrypted sync/conflict fixtures as the desktop clients, plus real-device offline and lifecycle checks.
 
-**Dependencies:** early iPhone prototype; UI work may start independently, but complete sync acceptance depends on 0.3. **Plan:** iPhone portions of chunks 4 and 6.
+**Dependencies:** personal iPhone prototype; UI work may start independently, but complete sync acceptance depends on 0.3. **Plan:** iPhone portions of chunks 4 and 6.
 
 ### Epic: Distribute and verify the three-platform release
 
@@ -108,7 +136,7 @@ Use one GitHub milestone per release, one tracking issue per epic, and small lin
 
 ## PR workflow
 
-Start with the current documentation change. For implementation, branch from updated `main`, address one linked issue or reviewable part of an epic, and squash-merge once checks and review pass. Delete a completed remote feature branch when it is no longer needed. Keep the milestone open until all its acceptance criteria are met.
+Keep the current desktop storage/setup PR focused. After it lands, prioritize the personal iPhone prototype in a separate branch from updated `main`. For each implementation PR, address one linked issue or reviewable part of an epic, and squash-merge once checks and review pass. Delete a completed remote feature branch when it is no longer needed. Keep the milestone open until all its acceptance criteria are met.
 
 Do not collect the entire roadmap into one PR or reuse a squash-merged branch for subsequent work. Keep unfinished cloud features disabled. A merge is not a public release or permission to enable signups; the release milestone has its own readiness criteria.
 

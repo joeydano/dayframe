@@ -1,6 +1,6 @@
 # MVP 2 and follow-up implementation plan
 
-- Status: Three-release split approved; 0.2 implementation started, later architecture choices still open
+- Status: Three public releases retained; personal iPhone prototype prioritized next on 2026-10-02; later architecture choices remain open
 - Date: 2026-09-29
 - Decision record: [ADR 002](../adr/0002-storage-sync-and-distribution.md)
 - Planning branch: `feat/dayframe-mvp-2`
@@ -23,13 +23,17 @@ Build in small increments and release each milestone on its own completion crite
 | **0.3 — Encrypted desktop sync**                 | Accounts, device enrollment/recovery, encrypted Linux↔macOS sync, conflict handling, cloud limits and operating procedures | Public iPhone app, shared calendars, widgets                   | Both desktop apps pass offline/conflict/recovery tests; public sync stays within the agreed operating limits |
 | **0.4 — iPhone and three-platform sync**         | Phone UI, native integrations/reminders, full three-platform verification, selected iPhone distribution channel            | TODO drawer and unrelated product expansion                    | The complete original Linux/macOS/iPhone sync goal works on real devices                                     |
 
-Keep an iPhone feasibility test in 0.2 even though public iPhone delivery moves to 0.4. It should prove Tauri, local persistence, key-storage access, and the relevant native capabilities without building the complete phone experience.
+Priority update (2026-10-02): the owner wants a usable iPhone prototype for personal demos and UI feedback before sync work. Add the interim milestone **iPhone prototype — personal demo**, keeping the three public release numbers above. Its [focused plan](iphone-prototype.md) covers offline day planning, touch-friendly block editing, local persistence, and launching an installed app independently of the Mac. This replaces the earlier placement of a minimal iPhone feasibility check inside 0.2.
+
+Current checkpoint (2026-10-02): the owner confirmed the source-build app launches on the Apple Silicon Mac after selecting the tested Rust toolchain. Finish the current desktop storage/setup PR, then prioritize the personal iPhone prototype in a separate branch. Desktop installer/download work can continue separately; publishing 0.2 is not a prerequisite for the prototype. Full synchronized iPhone delivery remains 0.4. See [0.2 progress](0.2-progress.md) for evidence and remaining desktop checks.
 
 Release infrastructure is incremental: establish the Linux/macOS build and download path in 0.2, extend it with sync-service operations in 0.3, and add iPhone distribution in 0.4. An early desktop release does not require completing later cloud or phone work.
 
 This split gives each release an independently useful outcome and keeps cloud operating costs out of 0.2. Buying Apple membership remains a separate decision; signed/notarized Mac distribution may require it before the iPhone release.
 
 ## Recommended order
+
+Immediate development priority: **finish the current desktop PR → personal iPhone prototype → encrypted desktop sync → complete iPhone/three-platform release**. Complete the remaining 0.2 installer work independently before claiming a public desktop release. The numbered chunks below describe the broader technical work; the phone demo takes the platform subset of chunks 1 and 6 ahead of chunk 3. It does not depend on backend selection, encryption, or full phone feature parity.
 
 | Chunk                             | Result                                                                   | Depends on                       | Completion evidence                                                                                                      |
 | --------------------------------- | ------------------------------------------------------------------------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -42,7 +46,7 @@ This split gives each release an independently useful outcome and keeps cloud op
 | 7. Prepare each release candidate | Reproducible installers and the operations needed for that release       | Its assigned feature chunks      | Clean install/upgrade succeeds; cloud recovery and cost controls pass before the first public sync release               |
 | 8. Publish the milestone          | Verified downloads and release notes for the completed scope             | 7                                | All platforms claimed by that release pass; the complete three-platform goal is reached in 0.4 under the approved split  |
 
-Under the approved split, 0.2 takes chunks 1–2 and the desktop portions of 6–8; 0.3 takes chunks 3–5 and the cloud portions of 7–8; 0.4 completes the phone portions of 4 and 6–8. Chunk 1 can screen backend feasibility now; final service selection waits until 0.3. The first 0.2 implementation changes SQLite's internal schema while retaining the version 1 planner/backup contract and existing local wall-clock behavior; it does not decide future cross-device time semantics.
+Under the updated plan, 0.2 takes chunk 2 and the desktop portions of 1 and 6–8; the interim personal iPhone prototype takes the bounded mobile portions of 1 and 6; 0.3 takes chunks 3–5, backend decisions from 1, and cloud portions of 7–8; 0.4 completes the phone portions of 4 and 6–8. Final service selection waits until 0.3. The first 0.2 implementation changes SQLite's internal schema while retaining the version 1 planner/backup contract and existing local wall-clock behavior; it does not decide future cross-device time semantics.
 
 ### Chunk 1 — resolve risks and contracts
 
@@ -54,7 +58,7 @@ Evaluate the backend using a small encrypted-record prototype and a written tota
 
 **Reviewable pieces:** platform prototype and compatibility findings; ADR decisions and service-budget proposal. Provisioning or purchasing a service is separate from this planning work.
 
-**Exit:** the core Tauri platform path is demonstrated, data-affecting product decisions are recorded, and a backend operating model fits the ceiling. If a platform or budget assumption fails, revise the affected choice before building on it.
+**Exit by milestone:** the personal phone prototype passes its own offline/demo checklist; backend and encryption decisions are not blockers for it. Before 0.3 integration, record data-affecting decisions and demonstrate a backend operating model that fits the ceiling. If a platform or budget assumption fails, revise the affected choice before building on it.
 
 ### Chunk 2 — evolve local storage
 
@@ -104,7 +108,7 @@ Define initial local/remote reconciliation and restore behavior. Prefer a previe
 
 ### Chunk 6 — complete the platform experience
 
-Develop the mobile layout incrementally after chunk 1; finish and verify it against the complete sync behavior here. Preserve common domain logic while adapting navigation, editing, scrolling, touch targets, safe areas, and keyboard behavior to the phone. Every required calendar action must have a practical touch interaction; dragging should not be the only way to edit times.
+Start the bounded mobile layout in the personal iPhone prototype before sync work; extend it to the agreed complete feature set and verify it against sync behavior in 0.4. Preserve common domain logic while adapting navigation, editing, scrolling, touch targets, safe areas, and keyboard behavior to the phone. Every required calendar action must have a practical touch interaction; dragging should not be the only way to edit times.
 
 Implement the agreed lifecycle and reminder behavior with platform adapters. Distinguish local reminders already scheduled on a device from newly received remote edits: a device that has not synced cannot reliably reflect the latest schedule. Where reminders while closed are required, test an OS-supported scheduling mechanism instead of depending on an in-process timer. [Apple documents local notification scheduling](https://developer.apple.com/documentation/usernotifications/scheduling-a-notification-locally-from-your-app).
 
@@ -155,13 +159,13 @@ Update the README with actual download links, supported versions/architectures, 
 
 ## Alternative build orders
 
-| Order                                                                                                        | When it is useful                                                  | Tradeoff                                                                                                             |
-| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| **Recommended: early platform proof → storage → encryption → small sync path → complete behavior → release** | Balances Apple feasibility, data safety, and demonstrable progress | First milestones are foundational; a complete synchronized planner arrives later                                     |
-| Storage and sync first, Apple apps later                                                                     | Prioritizes backend progress while Apple access is delayed         | Mobile plugin/key storage/auth constraints may force rework; all-platform release still waits for Apple verification |
-| Complete the local Mac/iPhone apps first, then add sync                                                      | Prioritizes hands-on UI feedback across devices                    | Storage migration may happen after platform polish; the hardest distributed-data risks stay unresolved longer        |
+| Order                                                                                                          | When it is useful                                                  | Tradeoff                                                                                                             |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| **Selected: current storage/setup → personal phone demo → encryption → desktop sync → complete phone release** | Balances Apple feasibility, data safety, and demonstrable progress | First milestones are foundational; a complete synchronized planner arrives later                                     |
+| Storage and sync first, Apple apps later                                                                       | Prioritizes backend progress while Apple access is delayed         | Mobile plugin/key storage/auth constraints may force rework; all-platform release still waits for Apple verification |
+| Complete the local Mac/iPhone apps first, then add sync                                                        | Prioritizes hands-on UI feedback across devices                    | Storage migration may happen after platform polish; the hardest distributed-data risks stay unresolved longer        |
 
-Prefer the recommended order because the Apple prototype is small, while storage/encryption decisions influence nearly every later change. Phone UI work can progress after that prototype, but it should not delay proving cross-device data correctness or replace the final integrated tests.
+The owner selected earlier hands-on phone feedback. Keep the prototype bounded so it produces a useful offline demo without absorbing the full iPhone release. This deliberately postpones sync implementation until after that demo; encryption, conflict handling, and final integrated tests retain their acceptance criteria.
 
 ## Backend alternatives
 
@@ -188,10 +192,10 @@ The narrower proposal defers the iPhone release to its own milestone while prese
 
 ## Review and integration workflow
 
-The [GitHub milestone/epic draft](github-milestones.md) contains the three approved milestones and eight tracking-issue descriptions with dependencies and completion checklists. The owner is adding them on GitHub; these local files do not claim remote creation.
+The [GitHub milestone/epic draft](github-milestones.md) contains the three public release milestones, the interim personal iPhone prototype milestone, and their tracking-issue descriptions with dependencies and completion checklists. The owner is adding them on GitHub; these local files do not claim remote creation.
 
 Use the current branch for this planning change. Recommend opening a documentation PR first, then implementing the reviewable pieces above in short-lived branches from updated `main`. Keep unfinished cloud features disabled until they meet their tests; merge verified foundations without publishing the release or enabling public signup.
 
 Each PR should state the behavior it introduces, the migration/compatibility impact, and the evidence for its completion criteria. Add regression tests with each behavior change. Use isolated databases and test accounts throughout; never use the owner's real planner as migration or sync test data. Keep signing credentials and production service access out of pull-request workflows.
 
-The largest uncertainties are encryption/recovery and complete sync semantics, followed by mobile lifecycle behavior. Estimate calendar time after chunk 1 demonstrates the platform path and resolves the remaining requirements. The sequence is a proposal, not a claim that these capabilities have already been implemented.
+The largest uncertainties are encryption/recovery and complete sync semantics, followed by mobile lifecycle behavior. Estimate calendar time after chunk 1 demonstrates the platform path and resolves the remaining requirements. The prototype priority is approved; detailed technical choices remain proposals, not claims that these capabilities have already been implemented.

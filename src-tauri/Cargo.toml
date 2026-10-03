@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A local-first time-block planner"
 authors = ["Dayframe contributors"]
 edition = "2021"
-rust-version = "1.77.2"
+rust-version = "1.98.1"
 
 [lib]
 name = "dayframe_lib"

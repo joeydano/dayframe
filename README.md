@@ -20,7 +20,7 @@ The current Fedora desktop app works offline, stores your planner locally, and s
 
 [GitHub Releases](https://github.com/joeydano/dayframe/releases) is the download hub. Packaged downloads have not been published yet; for now, [build and install on Fedora](docs/installation.md).
 
-Fedora is the currently verified platform. macOS and iOS downloads are not available yet.
+Fedora is the currently verified platform. [macOS source-build startup](docs/development.md#macos-build-preparation) is confirmed; full feature and installer checks are ongoing. macOS and iOS downloads are not available yet.
 
 ## Use
 

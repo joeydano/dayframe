@@ -3,7 +3,7 @@
 - Status: Accepted for 0.2 scope and local storage; 0.3–0.4 implementation decisions remain open
 - Date: 2026-09-29
 - Product: Dayframe
-- Milestones: 0.2 local foundations/desktop delivery; 0.3 encrypted desktop sync; 0.4 iPhone
+- Milestones: 0.2 local foundations/desktop delivery; interim personal iPhone prototype before 0.3 encrypted desktop sync; 0.4 full iPhone release
 - Builds on: [ADR 001](0001-product-scope-and-desktop-architecture.md)
 
 ## Context
@@ -17,7 +17,7 @@ Dates are local calendar dates plus wall-clock minutes, interpreted in the works
 ## Confirmed direction
 
 - Plan storage and synchronization across Linux, macOS, and iOS.
-- Deliver the native Linux/macOS/iPhone product goal in approved stages: 0.2 local desktop foundations, 0.3 encrypted desktop sync, and 0.4 iPhone. The current branch implements only 0.2.
+- Deliver the native Linux/macOS/iPhone product goal in approved stages: 0.2 local desktop foundations, 0.3 encrypted desktop sync, and 0.4 iPhone. Prioritize an interim personal iPhone prototype before sync work. The current branch implements only 0.2.
 - Defer the daily TODO drawer beyond MVP 2.
 - Offer cloud sync to anyone using Dayframe, rather than restricting it to the owner's devices.
 - Protect planner content with end-to-end encryption; the hosted service must not be able to read calendar titles or notes.
@@ -25,13 +25,19 @@ Dates are local calendar dates plus wall-clock minutes, interpreted in the works
 - Use a recovery key and trusted-device enrollment for encrypted data. If all devices and recovery material are lost, the existing encrypted planner is unrecoverable; a password reset does not recover its content.
 - Preserve conflicting versions and let the user choose how to resolve them. Do not silently use last-write-wins for concurrent changes to the same block.
 - Use GitHub downloads for initial desktop distribution. The owner has no Apple Developer membership but would consider USD 99/year to get an app onto the App Store. Enrollment and the iPhone installation channel are not yet selected.
-- Available hardware: a MacBook Air described as from 2021, and an iPhone 16. Confirm the Mac chip and both OS versions before defining the build/test matrix.
+- Available hardware: an Apple Silicon MacBook Air described as from 2021, and an iPhone 16. Confirm the exact Mac chip and both OS versions before defining the build/test matrix.
 - Keep the README concise: logo, about, download/use, and contribution/fork entry points. Detailed guides and ADRs belong in `docs/`, with contributor workflow in `CONTRIBUTING.md`.
 - Work on a separate branch, `feat/dayframe-mvp-2`, based on merged MVP 0.1.
 
 ADR 001 placed a daily checkable TODO drawer in MVP 0.2. The owner prioritized cross-platform foundations and synchronization instead, and postponed the checklist. ADR 001 is preserved as the historical decision.
 
 During implementation planning, the owner approved narrowing MVP 2 to 0.2 local foundations/desktop delivery, followed by 0.3 encrypted desktop sync and 0.4 iPhone/three-platform sync. This supersedes the earlier all-three-at-once release requirement. The product goal, encryption, conflict policy, and hard service budget remain unchanged. See the [implementation plan](../plans/mvp-2.md) and [milestone/epic descriptions](../plans/github-milestones.md).
+
+Platform evidence update (2026-10-02): macOS CI compiled/tested the native app, and the owner subsequently confirmed source startup on the Apple Silicon Mac after selecting Rust/Cargo 1.98.1. Full Mac feature and installer verification remains open. This supports continuing the Tauri feasibility work; it does not establish iOS compatibility. At this checkpoint the early phone feasibility check was still assigned to 0.2.
+
+Priority decision (2026-10-02): the owner subsequently prioritized an iOS prototype as the next milestone for testing and demoing on their own iPhone. Promote the earlier feasibility check into **iPhone prototype — personal demo**, a dedicated interim milestone ahead of encrypted desktop sync. Keep the 0.2/0.3/0.4 public release numbers. Finish the current desktop storage/setup PR, then build the prototype in focused follow-up PRs; desktop installer publication does not block it. The proposed boundary is offline day planning, basic touch editing, SQLite persistence, and an installed app that launches from the phone icon without the Mac or a development server. Accounts, cloud sync, full phone feature parity, and public store distribution remain later work. See the [prototype plan and completion checklist](../plans/iphone-prototype.md).
+
+The tradeoff is delaying sync implementation to get real-device usability feedback sooner. Start by evaluating shared Tauri/React and personal Xcode installation; the prototype must establish their suitability. Paid membership and TestFlight remain optional decisions, not approved purchases.
 
 ## 0.2 branch boundary and storage decision
 
@@ -59,9 +65,9 @@ A managed service may reduce infrastructure operation, but does not remove synch
 
 ### Release scope and platform access
 
-1. **Answered, revised:** ship 0.2 local desktop foundations, 0.3 encrypted desktop sync, and 0.4 iPhone. The complete three-platform goal spans these releases.
+1. **Answered, revised:** ship 0.2 local desktop foundations, 0.3 encrypted desktop sync, and 0.4 iPhone. The complete three-platform goal spans these releases. An interim personal iPhone prototype is the next development priority, before 0.3 sync.
 2. **Answered:** the daily TODO drawer is deferred beyond MVP 2.
-3. **Partly answered:** MacBook Air (described as 2021) and iPhone 16 are available. Confirm chip/OS versions, minimum supported versions, additional Mac architectures, and whether iPad is in scope.
+3. **Partly answered:** an Apple Silicon MacBook Air (described as 2021) and iPhone 16 are available; Mac source startup is confirmed. Confirm the exact chip/OS versions, minimum supported versions, additional Mac architectures, and whether iPad is in scope.
 4. **Partly answered:** no current Apple Developer membership; willing to consider USD 99/year for App Store access. GitHub desktop downloads are sufficient initially. Agree on personal testing versus TestFlight/App Store for iPhone and when enrollment becomes necessary.
 5. Does Linux distribution stay Fedora RPM initially, or include an AppImage or Flatpak/Flathub? Broader distro support needs a tested compatibility baseline.
 
@@ -85,7 +91,7 @@ A managed service may reduce infrastructure operation, but does not remove synch
 
 16. When traveling, should a 9 AM block remain at 9 AM locally or represent the same instant in its original time zone? Should routines and appointments behave differently? Recurrence must follow an explicit rule.
 17. Should reminders fire on every enabled device or a preferred device? Must they work with the app closed, and what is acceptable when a device has not received a remote change yet?
-18. Does iPhone need full editing, recurring blocks, templates, and backups, or a smaller first release? Is a shared Tauri UI acceptable if it has a dedicated touch layout, or is a SwiftUI interface a requirement?
+18. **Partly answered:** prioritize a smaller personal iPhone prototype for demos before sync. Propose day navigation and basic block editing/persistence for that milestone; full recurrence/template/backup parity remains a 0.4 scope decision. Evaluate shared Tauri/React on the real device before deciding whether a separate SwiftUI client is needed.
 19. Is a manual download/install update sufficient initially? Should automatic desktop updates, store updates, or Linux package-manager updates be supported, and which channel takes priority?
 
 ## Architecture candidates — not accepted decisions
@@ -156,6 +162,6 @@ These scenarios apply to their corresponding approved release milestones; sync a
 
 The approved release split in the [implementation plan](../plans/mvp-2.md) separates local desktop foundations (0.2), encrypted desktop sync (0.3), and iPhone (0.4). It includes completion criteria and considered alternatives. [0.2 progress](../plans/0.2-progress.md) records implemented work and checks still needed. Later architectural choices remain proposed.
 
-The three-release scope, 0.2 local storage design, public-sync direction, end-to-end encryption with recovery material/trusted devices, user-resolved conflicts, hard USD 20 monthly ceiling, initial GitHub desktop distribution, and deferral of TODOs are settled. The 0.3 sync provider/protocol, concrete encryption/recovery design, budget-enforcement mechanism, mobile implementation, and iPhone distribution path remain open. They are outside this branch's implementation scope.
+The three-release scope with a personal iPhone prototype prioritized before sync, 0.2 local storage design, public-sync direction, end-to-end encryption with recovery material/trusted devices, user-resolved conflicts, hard USD 20 monthly ceiling, initial GitHub desktop distribution, and deferral of TODOs are settled. The 0.3 sync provider/protocol, concrete encryption/recovery design, budget-enforcement mechanism, mobile implementation, and iPhone distribution path remain open. They are outside this branch's implementation scope.
 
 Until then, MVP 0.1 behavior and supported-platform claims remain the baseline. No account, paid service, Apple enrollment, store submission, or public release is created by this ADR.

@@ -1,5 +1,7 @@
 # Initial review: MVP 0.1
 
+This is the historical MVP 0.1 review record. See [0.2 progress](plans/0.2-progress.md) for current storage tests and confirmed macOS source startup, and [ADR 002](adr/0002-storage-sync-and-distribution.md) for the revised roadmap, including the postponed TODO drawer.
+
 ## What to review first
 
 1. [ADR 001](adr/0001-product-scope-and-desktop-architecture.md) records the agreed scope, Vite/React choice, local storage, recurrence semantics, reminder lifecycle, and future platform/sync direction.

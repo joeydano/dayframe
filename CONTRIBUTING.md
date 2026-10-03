@@ -12,7 +12,7 @@ cd dayframe
 git switch -c feat/your-change
 ```
 
-Follow [development setup](docs/development.md) for Fedora prerequisites, running the app, and building an installer. The [user guide](docs/user-guide.md) describes current behavior; the [documentation index](docs/README.md) links the architecture decisions.
+Follow [development setup](docs/development.md#native-development) for shared Node/Rust toolchain selection and Fedora prerequisites, or jump to [macOS setup and troubleshooting](docs/development.md#macos-build-preparation). The version files and lockfiles belong in Git; use them instead of choosing dependency/compiler versions separately. The [user guide](docs/user-guide.md) describes current behavior; the [documentation index](docs/README.md) links the architecture decisions.
 
 ## Make a change
 
@@ -32,7 +32,9 @@ cargo test --locked --manifest-path src-tauri/Cargo.toml
 
 For documentation-only changes, check formatting and links. Native changes also need an appropriate native test; see [testing](docs/development.md#testing). State what you verified and any platform you could not test in the PR description.
 
-Push your branch to your fork and open a pull request against `joeydano/dayframe`'s `main` branch. GitHub Actions runs frontend checks, browser tests, Rust tests, and a Linux native build. CI does not currently publish releases.
+For platform fixes, include the OS version/chip, Node/Rust/Cargo versions, and exact failing command or successful checks. Distinguish source startup, feature verification, and installer verification; the [Mac checklist](docs/development.md#build-and-verify-the-mac-app) describes the expected evidence.
+
+Push your branch to your fork and open a pull request against `joeydano/dayframe`'s `main` branch. GitHub Actions runs frontend checks, browser tests, Rust tests, and Linux/macOS native builds. CI does not currently publish releases.
 
 ## Maintain your own fork
 

@@ -36,4 +36,4 @@ Backups are plain JSON and contain your titles and notes. Keep them wherever you
 
 ## What's next
 
-Version 0.2 focuses on local storage and Fedora/macOS delivery. Encrypted desktop sync is planned for 0.3, followed by iPhone in 0.4. The per-day TODO drawer is deferred. See [ADR 002](adr/0002-storage-sync-and-distribution.md) for the agreed scope and remaining decisions. Cloud sync and the phone app are not implemented in this branch.
+Version 0.2 focuses on local storage and Fedora/macOS delivery. A [personal offline iPhone prototype](plans/iphone-prototype.md) is the next development priority. Encrypted desktop sync remains planned for 0.3, followed by the complete iPhone/three-platform release in 0.4. The per-day TODO drawer is deferred. See [ADR 002](adr/0002-storage-sync-and-distribution.md) for the agreed scope and remaining decisions. Cloud sync and the phone app are not implemented in this branch.

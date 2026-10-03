@@ -4,7 +4,9 @@
 
 [GitHub Releases](https://github.com/joeydano/dayframe/releases) is the download hub. No packaged releases have been published yet. The current app can be built and installed on Fedora using the steps below.
 
-Fedora is the verified desktop target. macOS and iOS installation paths are being planned in [ADR 002](adr/0002-storage-sync-and-distribution.md); there are no published builds or App Store listings for those platforms yet.
+Fedora is the verified desktop target. macOS compilation has passed CI, and the maintainer confirmed source-build startup on an Apple Silicon Mac on 2026-10-02. Full Mac feature and installer checks remain outstanding. Developers can follow the [Mac source-build instructions and troubleshooting](development.md#macos-build-preparation). There are no published Mac builds or App Store listings yet; [ADR 002](adr/0002-storage-sync-and-distribution.md) tracks distribution work.
+
+The build instructions require developer tools. Users of future packaged downloads will not need Node.js, Rust, or Xcode.
 
 ## Build and install on Fedora
 
@@ -12,7 +14,7 @@ Fedora is the verified desktop target. macOS and iOS installation paths are bein
 2. From the repository root, install dependencies and build the RPM:
 
    ```bash
-   npm ci
+   npm ci --include=optional
    npm run desktop:build
    ```
 
@@ -20,6 +22,12 @@ Fedora is the verified desktop target. macOS and iOS installation paths are bein
 4. Launch **Dayframe** from your desktop's app menu. You can pin its icon using your desktop's normal controls.
 
 See the [user guide](user-guide.md) to start planning. Native reminders require Dayframe to remain open or minimized.
+
+## Build a Mac test installer
+
+After completing [macOS developer setup](development.md#macos-build-preparation), run `npm run desktop:build:macos` on the Mac. The resulting DMG belongs in `src-tauri/target/release/bundle/dmg/`; open it and drag Dayframe into Applications, then test launch from its icon.
+
+This packaging path still needs hands-on verification. The confirmed source launch is not an installer/signing result. Public Developer ID signing/notarization is not configured, and no iPhone installer is available yet.
 
 ## Updates and backups
 
