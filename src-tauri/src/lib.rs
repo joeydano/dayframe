@@ -9,12 +9,12 @@ use tauri_plugin_notification::NotificationExt;
 
 #[tauri::command]
 fn load_planner(store: tauri::State<Store>) -> Result<Option<String>, String> {
-    let connection = store.0.lock().map_err(|e| e.to_string())?;
+    let connection = store.lock()?;
     store::read(&connection)
 }
 #[tauri::command]
 fn save_planner(payload: String, store: tauri::State<Store>) -> Result<(), String> {
-    let connection = store.0.lock().map_err(|e| e.to_string())?;
+    let connection = store.lock()?;
     store::write(&connection, &payload)
 }
 #[tauri::command]
@@ -50,8 +50,9 @@ pub fn run() {
             let directory = app.path().app_data_dir()?;
             std::fs::create_dir_all(&directory)?;
             let connection = rusqlite::Connection::open(directory.join("dayframe.db"))?;
-            store::initialize(&connection).map_err(std::io::Error::other)?;
-            app.manage(Store(Mutex::new(connection)));
+            // Keep the window available so the existing load-error UI can explain
+            // migration/corruption failures without replacing the saved planner.
+            app.manage(Store::new(connection));
             app.manage(Reminders(Mutex::new(Queue::default())));
             let handle = app.handle().clone();
             std::thread::spawn(move || loop {

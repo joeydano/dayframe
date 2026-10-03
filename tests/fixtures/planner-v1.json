@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "categories": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Focus",
+      "color": "iris"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "Personal",
+      "color": "sage"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "title": "Recurring work",
+      "notes": "Keep these notes",
+      "categoryId": "00000000-0000-4000-8000-000000000001",
+      "date": "2026-09-29",
+      "startMinute": 540,
+      "endMinute": 600,
+      "reminderMinutes": 5,
+      "recurrence": "weekdays",
+      "until": "2026-12-31",
+      "exceptions": ["2026-10-01"],
+      "createdAt": "2026-09-29T12:00:00Z",
+      "updatedAt": "2026-09-29T12:00:00Z"
+    }
+  ],
+  "templates": [
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "name": "Morning",
+      "createdAt": "2026-09-29T12:00:00Z",
+      "blocks": [
+        {
+          "title": "Template work",
+          "notes": "Template notes",
+          "categoryId": "00000000-0000-4000-8000-000000000002",
+          "startMinute": 600,
+          "endMinute": 660,
+          "reminderMinutes": null
+        }
+      ]
+    }
+  ],
+  "preferences": {
+    "theme": "dark",
+    "remindersEnabled": false,
+    "weekStartsOn": 1
+  }
+}
